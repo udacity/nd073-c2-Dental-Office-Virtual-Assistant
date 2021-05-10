@@ -28,7 +28,7 @@ class DentaBot extends ActivityHandler {
             // send user input to IntentRecognizer and collect the response in a variable
             // don't forget 'await'
                      
-            // Determine which service to respond with based on the results from LUIS //
+            // determine which service to respond with based on the results from LUIS //
 
             // if(top intent is intentA and confidence greater than 50){
             //  doSomething();
@@ -50,7 +50,7 @@ class DentaBot extends ActivityHandler {
                 await context.sendActivity(MessageFactory.text(welcomeText, welcomeText));
             }
         }
-        // By calling next() you ensure that the next BotHandler is run.
+        // by calling next() you ensure that the next BotHandler is run.
         await next();
     });
     }
