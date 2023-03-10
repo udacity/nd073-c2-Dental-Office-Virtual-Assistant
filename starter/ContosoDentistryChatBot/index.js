@@ -71,6 +71,7 @@ const LuisConfiguration = {
 const SchedulerConfiguration = {
     SchedulerEndpoint: process.env.SchedulerEndpoint
 }
+
 //pack each service configuration into 
 const configuration = {
     QnAConfiguration,
@@ -78,11 +79,13 @@ const configuration = {
     SchedulerConfiguration
 }
 
+//const configuration = {}
+
 // Create the main dialog.
 const myBot = new DentaBot(configuration, {});
 
 // Listen for incoming requests.
-server.post('/api/messages', (req, res) => {
+server.post('/api/messages', (req, res, next) => {
     adapter.processActivity(req, res, async (context) => {
         // Route to main dialog.
         await myBot.run(context);
