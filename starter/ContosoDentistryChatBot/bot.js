@@ -32,7 +32,7 @@ class DentaBot extends ActivityHandler {
             }
             else {
                 // If no answers were returned from QnA Maker, reply with help.
-                await context.sendActivity(`I'm not sure I found an answer to your question You can ask me questions about electric vehicles like "how can I charge my car?"`);
+                await context.sendActivity(`I'm not sure I found an answer to your question`);
              }
           
             // send user input to IntentRecognizer and collect the response in a variable
