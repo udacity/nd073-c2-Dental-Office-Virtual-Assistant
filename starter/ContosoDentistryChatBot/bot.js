@@ -33,32 +33,7 @@ class DentaBot extends ActivityHandler {
             if (qnaResults[0]) {
                 console.log(qnaResults[0])
                 await context.sendActivity(`${qnaResults[0].answer}`);
-             }
-
-            
-            // If an answer was received from CQA, send the answer back to the user.
-            // if (response.length > 0) {
-            //     var activities = [];
-
-            //     var answerText = response[0].answer;
-
-            //     // Answer span text has precise answer.
-            //     var preciseAnswerText = response[0].answerSpan?.text;
-            //     if (!preciseAnswerText) {
-            //         activities.push({ type: ActivityTypes.Message, text: answerText });
-            //     } else {
-            //         activities.push({ type: ActivityTypes.Message, text: preciseAnswerText });
-
-            //         if (!displayPreciseAnswerOnly) {
-            //             // Add answer to the reply when it is configured.
-            //             activities.push({ type: ActivityTypes.Message, text: answerText });
-            //         }
-            //     }
-            //     await context.sendActivities(activities);
-            //     // If no answers were returned from QnA Maker, reply with help.
-            // } else {
-            //     await context.sendActivity('No answers were found.');
-            //}
+            }
           
             // send user input to IntentRecognizer and collect the response in a variable
             // don't forget 'await'
