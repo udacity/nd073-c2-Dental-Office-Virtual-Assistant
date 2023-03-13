@@ -3,7 +3,7 @@
 
 const { ActivityHandler, MessageFactory } = require('botbuilder');
 
-const { QnAMaker } = require('botbuilder-ai');
+const { QnAMaker, CustomQuestionAnswering } = require('botbuilder-ai');
 const DentistScheduler = require('./dentistscheduler');
 const IntentRecognizer = require("./intentrecognizer")
 
@@ -14,7 +14,11 @@ class DentaBot extends ActivityHandler {
         if (!configuration) throw new Error('[QnaMakerBot]: Missing parameter. configuration is required');
 
         // create a QnAMaker connector
-        this.QnAMaker = new QnAMaker(configuration.QnAConfiguration, qnaOptions);
+        try {
+            this.qnAMaker = new CustomQuestionAnswering(configuration.QnAConfiguration);
+        }  catch (err) {
+            console.warn(`QnAMaker Exception: ${ err } Check your QnAMaker configuration in .env`);
+        }
        
         // create a DentistScheduler connector
       
@@ -24,16 +28,12 @@ class DentaBot extends ActivityHandler {
         this.onMessage(async (context, next) => {
             // send user input to QnA Maker and collect the response in a variable
             // don't forget to use the 'await' keyword
-            const qnaResults = await this.qnaMaker.getAnswers(context);
-            // If an answer was received from QnA Maker, send the answer back to the user.
+            const qnaResults = await this.qnAMaker.getAnswers(context);
+
             if (qnaResults[0]) {
                 console.log(qnaResults[0])
                 await context.sendActivity(`${qnaResults[0].answer}`);
             }
-            else {
-                // If no answers were returned from QnA Maker, reply with help.
-                await context.sendActivity(`I'm not sure I found an answer to your question`);
-             }
           
             // send user input to IntentRecognizer and collect the response in a variable
             // don't forget 'await'
@@ -54,7 +54,7 @@ class DentaBot extends ActivityHandler {
         this.onMembersAdded(async (context, next) => {
         const membersAdded = context.activity.membersAdded;
         //write a custom greeting
-        const welcomeText = '';
+        const welcomeText = 'welcome to the dental office';
         for (let cnt = 0; cnt < membersAdded.length; ++cnt) {
             if (membersAdded[cnt].id !== context.activity.recipient.id) {
                 await context.sendActivity(MessageFactory.text(welcomeText, welcomeText));
