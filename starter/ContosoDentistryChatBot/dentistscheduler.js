@@ -5,8 +5,7 @@ class DentistScheduler {
             const times = await response.json()
             let responseText = `Current time slots available: `
             times.map(time => {
-                responseText += `
-${time}`
+                responseText += `${time}`
             })
             return responseText
         }

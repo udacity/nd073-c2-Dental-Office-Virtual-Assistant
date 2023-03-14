@@ -21,8 +21,12 @@ class DentaBot extends ActivityHandler {
         }
        
         // create a DentistScheduler connector
+
+        this.dentistScheduler = new DentistScheduler(configuration.SchedulerConfiguration);
       
         // create a IntentRecognizer connector
+
+        this.intentRecognizer = new IntentRecognizer(configuration.LuisConfiguration);
 
 
         this.onMessage(async (context, next) => {
@@ -34,9 +38,30 @@ class DentaBot extends ActivityHandler {
                 console.log(qnaResults[0])
                 await context.sendActivity(`${qnaResults[0].answer}`);
             }
+
+            const luisResult =  await this.intentRecognizer.executeLuisQuery(context);
           
-            // send user input to IntentRecognizer and collect the response in a variable
-            // don't forget 'await'
+            if (luisResult.luisResult.prediction.topIntent == "GetAvailability" && 
+                luisResult.intents &&
+                luisResult.intents.GetAvailability &&
+                luisResult.intents.GetAvailability.score &&
+                luisResult.intents.GetAvailability.score > .7) {
+
+                const availabilityResults = await this.dentistScheduler.getAvailability();
+                console.log(availabilityResults)
+                await context.sendActivity(availabilityResults);
+            }
+
+            if (luisResult.luisResult.prediction.topIntent == "ScheduleAppointment" && 
+                luisResult.intents &&
+                luisResult.intents.ScheduleAppointment &&
+                luisResult.intents.ScheduleAppointment.score &&
+                luisResult.intents.ScheduleAppointment.score > .7) {
+
+                const availabilityResults = await this.dentistScheduler.scheduleAppointment(10)
+                await context.sendActivity(availabilityResults);
+            }
+            console.log(luisResult)
                      
             // determine which service to respond with based on the results from LUIS //
 
